@@ -1,0 +1,57 @@
+.App {
+  max-width: 575px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+}
+.todoForm {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
+}
+.todoForm input {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #ccc;
+  transition: border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+}
+.todoForm input:focus {
+  border-color: cornflowerblue;
+  box-shadow: 0 0 10px 2px cornflowerblue;
+}
+.todoForm button {
+  margin-left: 5px;
+  border: 1px solid transparent;
+  background-color: cornflowerblue;
+  color: #fff;
+  border-radius: 4px;
+  transition: background-color .3s ease-in-out, border-color .3s ease-in-out;
+  outline: none;
+  padding: 0 4px;
+}
+.todoForm button:hover {
+  cursor: pointer;
+  background-color: #5b91f1;
+}
+.todoForm button:focus {
+  border-color: #5b91f1;
+}
+
+.todolist {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.visibilityFilters {
+  margin-top: 15px;
+  align-self: flex-start;
+}

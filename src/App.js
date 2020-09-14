@@ -1,26 +1,112 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+//Redux
+import {connect} from 'react-redux';
+import * as todoActions from './store/todo/actions';
+
+//styles
+import styles from './App.module.css';
+
+//components
+import TodoItem from "./components/TodoItem";
+import VisibilityFilter from "./components/VisibilityFilter";
+
+class App extends Component {
+
+  state = {
+    value: '',
+  };
+
+  handleInputChange = (e) => {
+    this.setState({
+      value: e.target.value
+    });
+  };
+
+  handleFormSubmit = (e) => {
+    e.preventDefault();
+    const {addTodo} = this.props;
+    addTodo(this.state.value);
+
+    this.setState(prevState => ({
+      ...prevState,
+      value: ''
+    }));
+  };
+
+  getVisibleTodos = (filter, todos) => {
+    switch (filter) {
+      case 'SHOW_ALL': {
+        return todos
+      }
+      case 'SHOW_ACTIVE': {
+        return todos.filter(t => !t.done)
+      }
+      case 'SHOW_COMPLETED': {
+        return todos.filter(t => t.done)
+      }
+      default: {
+        return todos
+      }
+    }
+  }
+
+  render() {
+
+    const {value} = this.state;
+    const {todo, visibilityFilter} = this.props;
+
+    const setVisibility = this.getVisibleTodos(visibilityFilter, todo);
+
+    return (
+      <div className={styles.App}>
+        <form
+          onSubmit={this.handleFormSubmit}
+          className={styles.todoForm}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          <input onChange={this.handleInputChange} value={value} type="text"/>
+          <button>Add</button>
+        </form>
+        <div className={styles.todolist}>
+          {
+            setVisibility.map((elem) => {
+              return (
+                <TodoItem key={elem.id} value={elem.value} id={elem.id} done={elem.done}/>
+              )
+            })
+          }
+        </div>
+        <p className={styles.visibilityFilters}>
+          Show:
+          {' '}
+          <VisibilityFilter filter='SHOW_ALL'>
+            All
+          </VisibilityFilter>
+          {' '}
+          <VisibilityFilter filter='SHOW_COMPLETED'>
+            Completed
+          </VisibilityFilter>
+          {' '}
+          <VisibilityFilter filter='SHOW_ACTIVE'>
+            Active
+          </VisibilityFilter>
+        </p>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    todo: state.todoReducer.todo,
+    visibilityFilter: state.setVisibilityFilterReducer
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo: (todo) => dispatch(todoActions.addTodo(todo)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
